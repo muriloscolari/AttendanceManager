@@ -49,23 +49,24 @@ Chega de planilhas e filas! O QRPass é a solução completa e moderna para voc�
 
 ## 🛠️ Tecnologias Utilizadas:
 
-*   **Backend:** Python 3, Flask, Flask-SQLAlchemy (PostgreSQL), Pillow, qrcode, requests.
+*   **Backend:** Python 3, Flask, Flask-SQLAlchemy (PostgreSQL), Flask-Migrate, Pillow, qrcode, boto3.
+*   **Armazenamento:** Backblaze B2 (S3-compatible) para logos e arquivos, com cache LRU em memória.
 *   **Frontend:** HTML5, CSS3 (Tailwind CSS), JavaScript (Vanilla JS), Chart.js, html5-qrcode, Anime.js.
 *   **Banco de Dados:** PostgreSQL (para escalabilidade e robustez).
 
 ## 🚀 Setup e Execução do Projeto Localmente:
 
 ### Pré-requisitos:
-*   Python 3.7+
+*   Python 3.10+
 *   `pip` (gerenciador de pacotes Python)
-*   Um arquivo de fonte TrueType (TTF), como `Montserrat-Regular.ttf` (já incluído no projeto).
 *   Acesso a um banco de dados PostgreSQL (pode ser local ou em nuvem).
+*   Conta no Backblaze B2 com um bucket configurado (para armazenamento de imagens).
 
 ### Passos para Configuração:
 
 1.  **Clone o Repositório:**
     ```bash
-    git clone <url_do_repositorio>
+    git clone https://github.com/muriloscolari/AttendanceManager.git
     cd AttendanceManager
     ```
 
@@ -82,18 +83,25 @@ Chega de planilhas e filas! O QRPass é a solução completa e moderna para voc�
     ```
 
 4.  **Configure o Ambiente:**
-    *   Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+    *   Crie um arquivo `.env` na raiz do projeto baseado no `.env.example`:
         ```env
         SECRET_KEY=sua_chave_secreta_aqui_gerada_aleatoriamente
-        ABACATE_API_KEY=sua_chave_api_do_abacatepay
+        FLASK_DEBUG=True
         DATABASE_URL=postgresql://user:password@host:port/database_name
-        FLASK_DEBUG=True # Opcional: para ativar o modo debug
+        
+        # API de Pagamento
+        ABACATE_API_KEY=sua_chave_api_do_abacatepay
+        
+        # Backblaze B2 Storage
+        B2_KEY_ID=seu_key_id_do_b2
+        B2_APP_KEY=sua_application_key_do_b2
+        B2_BUCKET_NAME=nome_do_seu_bucket
+        B2_ENDPOINT_URL=https://s3.us-east-005.backblazeb2.com
         ```
     *   **Importante:** A `DATABASE_URL` deve apontar para o seu banco de dados PostgreSQL.
-    *   Certifique-se de que o arquivo de fonte TTF está na raiz do projeto (ou no caminho `static/fonts`).
+    *   **Importante:** Crie uma Application Key no Backblaze B2 (não use a Master Key).
 
 5.  **Inicialize o Banco de Dados (Alembic):**
-    *   Certifique-se de que o Alembic está configurado (o arquivo `alembic.ini` deve estar na raiz).
     *   Execute as migrações para criar as tabelas no seu banco de dados PostgreSQL:
         ```bash
         flask db upgrade
@@ -101,7 +109,7 @@ Chega de planilhas e filas! O QRPass é a solução completa e moderna para voc�
 
 6.  **Execute a Aplicação:**
     ```bash
-    python app.py
+    python run.py
     ```
     Acesse `http://localhost:5000/` no seu navegador.
 

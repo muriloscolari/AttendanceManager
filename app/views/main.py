@@ -68,16 +68,23 @@ def complete_profile():
 @bp.route('/persistent/<path:filename>')
 def serve_persistent_file(filename):
     """
-    Redireciona para URL pré-assinada do S3 para servir arquivos.
+    Serve arquivo do S3 com cache em memória.
+    Evita problemas de CORS e melhora performance.
     """
-    try:
-        storage = get_storage_service()
-        presigned_url = storage.get_presigned_url(filename, expiration=3600)
-        if presigned_url:
-            return redirect(presigned_url)
-        else:
-            current_app.logger.error(f"Falha ao gerar URL pré-assinada para {filename}")
-            abort(404)
-    except Exception as e:
-        current_app.logger.error(f"Erro ao servir arquivo persistente {filename}: {e}")
+    from flask import Response
+    
+    storage = get_storage_service()
+    data, content_type = storage.get_file_cached(filename)
+    
+    if data is None:
+        current_app.logger.error(f"Arquivo não encontrado: {filename}")
         abort(404)
+    
+    return Response(
+        data,
+        mimetype=content_type,
+        headers={
+            'Cache-Control': 'public, max-age=31536000',
+            'Content-Disposition': 'inline'
+        }
+    )

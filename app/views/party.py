@@ -91,6 +91,8 @@ def delete_party(party_id):
 @bp.route('/<int:party_id>/upload_logo', methods=['POST'])
 @login_required
 def upload_logo(party_id):
+    from app.services.storage import compress_image
+    
     party = db.session.get(Party, party_id) or abort(404)
     check_collaboration_permission(party)
     if 'party_logo' not in request.files:
@@ -109,22 +111,26 @@ def upload_logo(party_id):
             except Exception as e:
                 current_app.logger.warning(f"Failed to delete old logo: {e}")
         
+        # Compress image before upload
         filename = secure_filename(file.filename)
-        unique_id = uuid.uuid4().hex
-        ext = filename.rsplit('.', 1)[1].lower()
-        new_filename = f"{party_id}_{unique_id}.{ext}"
+        compressed_stream, new_filename, content_type = compress_image(file.stream, filename)
         
-        # Upload to S3
-        content_type = f"image/{ext}" if ext in ['png', 'jpg', 'jpeg', 'gif'] else 'application/octet-stream'
+        # Add unique ID to filename
+        unique_id = uuid.uuid4().hex
+        base_name = new_filename.rsplit('.', 1)[0] if '.' in new_filename else new_filename
+        ext = new_filename.rsplit('.', 1)[1] if '.' in new_filename else 'jpg'
+        final_filename = f"{party_id}_{unique_id}.{ext}"
+        
+        # Upload compressed image to S3
         full_key = storage.upload_file(
-            file.stream,
-            new_filename,
+            compressed_stream,
+            final_filename,
             folder=Config.PARTY_LOGOS_FOLDER_NAME,
             content_type=content_type
         )
         
         if full_key:
-            party.logo_filename = new_filename
+            party.logo_filename = final_filename
             db.session.commit()
             # Generate presigned URL for immediate display
             logo_url = storage.get_presigned_url(full_key, expiration=3600)
