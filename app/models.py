@@ -84,8 +84,11 @@ class Guest(db.Model):
     @property
     def pix_qr_code_url(self):
         if self.pix_qr_code_filename:
-            # Adjusted for Blueprint 'main'
-            return url_for('main.serve_persistent_file', filename=f"{Config.PAYMENT_QRCODES_FOLDER_NAME}/{self.pix_qr_code_filename}")
+            # Generate presigned URL from S3
+            from app.services.storage import get_storage_service
+            storage = get_storage_service()
+            key = f"{Config.PAYMENT_QRCODES_FOLDER_NAME}/{self.pix_qr_code_filename}"
+            return storage.get_presigned_url(key, expiration=3600)
         return None
 
     def get_check_in_time_str(self):

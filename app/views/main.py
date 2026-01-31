@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from app.models import User, Guest, Party
 from app.extensions import db
 from app.config import Config
+from app.services.storage import get_storage_service
 
 bp = Blueprint('main', __name__)
 
@@ -67,10 +68,16 @@ def complete_profile():
 @bp.route('/persistent/<path:filename>')
 def serve_persistent_file(filename):
     """
-    Serve arquivos da pasta de armazenamento persistente.
+    Redireciona para URL pré-assinada do S3 para servir arquivos.
     """
     try:
-        return send_from_directory(Config.STORAGE_BASE_PATH, filename)
+        storage = get_storage_service()
+        presigned_url = storage.get_presigned_url(filename, expiration=3600)
+        if presigned_url:
+            return redirect(presigned_url)
+        else:
+            current_app.logger.error(f"Falha ao gerar URL pré-assinada para {filename}")
+            abort(404)
     except Exception as e:
         current_app.logger.error(f"Erro ao servir arquivo persistente {filename}: {e}")
         abort(404)

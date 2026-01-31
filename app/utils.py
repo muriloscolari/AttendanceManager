@@ -18,13 +18,14 @@ from fpdf import FPDF, XPos, YPos
 
 from app.config import Config
 from app.extensions import db
+from app.services.storage import get_storage_service
 
 # Import models inside functions or use strings to avoid circular imports? 
 # Usually strictly typing requires models. But Python is dynamic.
 # I will import models inside functions where necessary or use argument passing style.
 
 def save_base64_as_png(base64_string, charge_id):
-    """Decodifica uma string base64 e a salva como um arquivo PNG."""
+    """Decodifica uma string base64 e a envia para o S3."""
     if not base64_string or not charge_id:
         return None
     try:
@@ -33,25 +34,39 @@ def save_base64_as_png(base64_string, charge_id):
         else:
             clean_base64_string = base64_string
         img_data = base64.b64decode(clean_base64_string)
-        img = Image.open(io.BytesIO(img_data))
+        
+        # Cria objeto em memória para upload
+        img_io = io.BytesIO(img_data)
         filename = f"{charge_id}.png"
-        save_path = os.path.join(Config.PAYMENT_QRCODES_SAVE_PATH, filename)
-        img.save(save_path, 'PNG')
-        return filename
+        
+        storage = get_storage_service()
+        # Salva na pasta payment_qrcodes dentro do bucket
+        full_key = storage.upload_file(
+            img_io, 
+            filename, 
+            folder=Config.PAYMENT_QRCODES_FOLDER_NAME,
+            content_type="image/png"
+        )
+        
+        if full_key:
+            return filename # Retornamos apenas o nome do arquivo para manter compatibilidade com o banco
+        return None
     except Exception as e:
-        current_app.logger.error(f"Erro ao salvar imagem base64 para charge_id {charge_id}: {e}")
+        current_app.logger.error(f"Erro ao salvar imagem base64 no S3 para charge_id {charge_id}: {e}")
         return None
 
 def delete_pix_qr_code_file(guest):
-    """Deleta o arquivo de imagem do QR Code do PIX associado a um convidado."""
+    """Deleta o arquivo de imagem do QR Code do PIX associado a um convidado do S3."""
     if guest and guest.pix_qr_code_filename:
         try:
-            file_path = os.path.join(Config.PAYMENT_QRCODES_SAVE_PATH, guest.pix_qr_code_filename)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-                current_app.logger.info(f"Arquivo QR Code PIX {guest.pix_qr_code_filename} deletado com sucesso.")
+            storage = get_storage_service()
+            folder = Config.PAYMENT_QRCODES_FOLDER_NAME
+            # O banco guarda 'filename.png', mas no S3 está em 'payment_qrcodes/filename.png'
+            key = f"{folder}/{guest.pix_qr_code_filename}"
+            if storage.delete_file(key):
+                current_app.logger.info(f"Arquivo QR Code PIX {key} deletado do S3 com sucesso.")
             else:
-                current_app.logger.warning(f"Arquivo QR Code PIX {guest.pix_qr_code_filename} não encontrado para deleção.")
+                current_app.logger.warning(f"Falha ao deletar {key} do S3.")
         except Exception as e:
             current_app.logger.error(f"Erro ao deletar o arquivo QR Code PIX {guest.pix_qr_code_filename}: {e}")
 
@@ -97,10 +112,17 @@ def generate_qr_code_image(qr_data, guest_name, party, output_format='PNG', font
 
         logo_img_raw, logo_height = None, 0
         if party.logo_filename:
-            logo_path = os.path.join(Config.PARTY_LOGOS_SAVE_PATH, party.logo_filename)
-            if os.path.exists(logo_path):
+            try:
+                # Load logo from S3
+                storage = get_storage_service()
+                key = f"{Config.PARTY_LOGOS_FOLDER_NAME}/{party.logo_filename}"
+                
+                # Download image bytes from S3
+                response = storage.s3_client.get_object(Bucket=storage.bucket_name, Key=key)
+                logo_bytes = response['Body'].read()
+                
                 logo_height = int(CARD_WIDTH / LOGO_ASPECT_RATIO)
-                logo_img_raw = Image.open(logo_path).convert("RGBA")
+                logo_img_raw = Image.open(io.BytesIO(logo_bytes)).convert("RGBA")
                 try:
                     vibrant_colors = get_vibrant_colors(logo_img_raw, num_colors=2)
                     if len(vibrant_colors) >= 1:
@@ -109,6 +131,8 @@ def generate_qr_code_image(qr_data, guest_name, party, output_format='PNG', font
                         GRADIENT_START = tuple(int(c * 0.5) for c in main_color)
                 except Exception as e:
                     current_app.logger.warning(f"Não foi possível extrair cores: {e}.")
+            except Exception as e:
+                current_app.logger.warning(f"Falha ao carregar logo do S3: {e}")
 
         qr_instance = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=8, border=2)
         qr_instance.add_data(qr_data)

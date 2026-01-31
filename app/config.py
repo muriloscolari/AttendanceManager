@@ -27,3 +27,9 @@ class Config:
     
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Backblaze B2 Configuration
+    B2_KEY_ID = os.environ.get('B2_KEY_ID')
+    B2_APP_KEY = os.environ.get('B2_APP_KEY')
+    B2_BUCKET_NAME = os.environ.get('B2_BUCKET_NAME')
+    B2_ENDPOINT_URL = os.environ.get('B2_ENDPOINT_URL')

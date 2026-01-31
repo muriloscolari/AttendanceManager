@@ -17,6 +17,7 @@ from app.utils import (
     PDF, get_all_guests_for_export, delete_pix_qr_code_file
 )
 from app.views import check_collaboration_permission
+from app.services.storage import get_storage_service
 
 bp = Blueprint('party', __name__)
 
@@ -72,9 +73,14 @@ def delete_party(party_id):
         flash("Apenas o dono da festa pode deletá-la.", "danger")
         return redirect(url_for('main.dashboard'))
 
+    # Delete logo from S3 if exists
     if party.logo_filename:
-        try: os.remove(os.path.join(Config.PARTY_LOGOS_SAVE_PATH, party.logo_filename))
-        except OSError: pass
+        try:
+            storage = get_storage_service()
+            key = f"{Config.PARTY_LOGOS_FOLDER_NAME}/{party.logo_filename}"
+            storage.delete_file(key)
+        except Exception as e:
+            current_app.logger.warning(f"Failed to delete logo from S3: {e}")
 
     db.session.delete(party)
     db.session.commit()
@@ -93,20 +99,38 @@ def upload_logo(party_id):
     if file.filename == '':
         return jsonify({'success': False, 'message': 'Nenhum arquivo selecionado.'}), 400
     if file and allowed_file(file.filename):
+        storage = get_storage_service()
+        
+        # Delete old logo from S3 if exists
         if party.logo_filename:
             try:
-                os.remove(os.path.join(Config.PARTY_LOGOS_SAVE_PATH, party.logo_filename))
-            except OSError:
-                pass
+                old_key = f"{Config.PARTY_LOGOS_FOLDER_NAME}/{party.logo_filename}"
+                storage.delete_file(old_key)
+            except Exception as e:
+                current_app.logger.warning(f"Failed to delete old logo: {e}")
+        
         filename = secure_filename(file.filename)
         unique_id = uuid.uuid4().hex
         ext = filename.rsplit('.', 1)[1].lower()
         new_filename = f"{party_id}_{unique_id}.{ext}"
-        file.save(os.path.join(Config.PARTY_LOGOS_SAVE_PATH, new_filename))
-        party.logo_filename = new_filename
-        db.session.commit()
-        logo_url = url_for('main.serve_persistent_file', filename=f'{Config.PARTY_LOGOS_FOLDER_NAME}/{new_filename}')
-        return jsonify({'success': True, 'message': 'Logo da festa atualizado!', 'logo_url': logo_url})
+        
+        # Upload to S3
+        content_type = f"image/{ext}" if ext in ['png', 'jpg', 'jpeg', 'gif'] else 'application/octet-stream'
+        full_key = storage.upload_file(
+            file.stream,
+            new_filename,
+            folder=Config.PARTY_LOGOS_FOLDER_NAME,
+            content_type=content_type
+        )
+        
+        if full_key:
+            party.logo_filename = new_filename
+            db.session.commit()
+            # Generate presigned URL for immediate display
+            logo_url = storage.get_presigned_url(full_key, expiration=3600)
+            return jsonify({'success': True, 'message': 'Logo da festa atualizado!', 'logo_url': logo_url})
+        else:
+            return jsonify({'success': False, 'message': 'Erro ao fazer upload do logo.'}), 500
     else:
         return jsonify({'success': False, 'message': 'Tipo de arquivo inválido.'}), 400
 

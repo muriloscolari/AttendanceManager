@@ -43,4 +43,5 @@ typing_extensions
 tzdata
 urllib3
 Werkzeug
+boto3
 WTForms
