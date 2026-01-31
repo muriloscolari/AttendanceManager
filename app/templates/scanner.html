@@ -1,44 +1,55 @@
 {% extends "layout.html" %}
 {% block title %}Check-in: {{ party.name }}{% endblock %}
 {% block header_actions %}
-    <!-- MUDANÇA: Botão para esquecer o scanner -->
-    <a href="{{ url_for('public.forget_scanner') }}" class="glass-effect text-yellow-600 dark:text-yellow-400 px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Trocar Festa</span>
-    </a>
+<!-- MUDANÇA: Botão para esquecer o scanner -->
+<a href="{{ url_for('public.forget_scanner') }}"
+    class="glass-effect text-yellow-600 dark:text-yellow-400 px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Trocar Festa</span>
+</a>
 {% endblock %}
 
 {% block content %}
+
 <body data-party-id="{{ party.id }}">
     <div class="glass-card rounded-2xl shadow-2xl p-6 text-center">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Check-in Rápido</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-6">Festa: <span class="font-bold">{{ party.name }}</span></p>
-        
+
         <div id="qrReaderMessageContainer" class="mb-6">
             <div class="glass-effect border border-blue-200 dark:border-blue-700 rounded-xl p-4">
-                <p class="text-blue-800 dark:text-blue-300 font-medium">Clique em "Iniciar Scanner" para ativar a câmera.</p>
-                <p class="text-blue-600 dark:text-blue-400 text-sm mt-1">HTTPS e permissão de câmera são necessários.</p>
+                <p class="text-blue-800 dark:text-blue-300 font-medium">Clique em "Iniciar Scanner" para ativar a
+                    câmera.</p>
+                <p class="text-blue-600 dark:text-blue-400 text-sm mt-1">HTTPS e permissão de câmera são necessários.
+                </p>
             </div>
         </div>
-        
-        <div id="qrScannerWrapper" class="relative inline-block rounded-2xl overflow-hidden border-4 border-primary shadow-2xl" style="display: none; width: 80vw; max-width: 320px; aspect-ratio: 1/1;">
+
+        <div id="qrScannerWrapper"
+            class="relative inline-block rounded-2xl overflow-hidden border-4 border-primary shadow-2xl"
+            style="display: none; width: 80vw; max-width: 320px; aspect-ratio: 1/1;">
             <div id="qrReader" class="w-full h-full"></div>
-            <div id="scanOverlayFeedback" class="absolute inset-0 flex-col justify-center items-center text-white text-lg font-bold text-center opacity-0 transition-all duration-300 pointer-events-none z-10 p-4" style="backdrop-filter: blur(8px);"></div>
+            <div id="scanOverlayFeedback"
+                class="absolute inset-0 flex-col justify-center items-center text-white text-lg font-bold text-center opacity-0 transition-all duration-300 pointer-events-none z-10 p-4"
+                style="backdrop-filter: blur(8px);"></div>
         </div>
-        
+
         <div class="mt-6 space-y-4">
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button id="startScanButton" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center justify-center space-x-2">
+                <button id="startScanButton"
+                    class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center justify-center space-x-2">
                     <i class="fas fa-play"></i>
                     <span>Iniciar Scanner</span>
                 </button>
-                <button id="stopScanButton" style="display:none;" class="bg-gray-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2">
+                <button id="stopScanButton" style="display:none;"
+                    class="bg-gray-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2">
                     <i class="fas fa-stop"></i>
                     <span>Parar Scanner</span>
                 </button>
             </div>
-            
-            <div id="scanResultText" class="p-4 rounded-xl font-medium min-h-[3rem] flex items-center justify-center glass-effect"></div>
+
+            <div id="scanResultText"
+                class="p-4 rounded-xl font-medium min-h-[3rem] flex items-center justify-center glass-effect"></div>
         </div>
     </div>
     <audio id="beepSound" src="{{ url_for('static', filename='beep.mp3') }}" preload="auto"></audio>
@@ -48,12 +59,12 @@
 <script>
     // O JavaScript desta página não precisa mudar, ele já lê o party_id do body.
     const partyId = document.body.getAttribute('data-party-id');
-    const API_URL = `/api/party/${partyId}`;
+    const API_URL = `/party/api/${partyId}`;
     let html5QrCode;
     const beepAudio = document.getElementById('beepSound');
     let lastScannedHash = null;
     let lastScanTime = 0;
-    const SCAN_COOLDOWN_MS = 3000;
+    const SCAN_COOLDOWN_MS = 8000; // 8 segundos para evitar loops no mesmo QR
     let overlayTimeoutId;
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -65,14 +76,14 @@
     function showOverlayFeedback(type, icon, message) {
         const overlay = document.getElementById('scanOverlayFeedback');
         const textFeedback = document.getElementById('scanResultText');
-        
+
         clearTimeout(overlayTimeoutId);
 
         overlay.innerHTML = `<div class="text-5xl mb-2">${icon}</div><div class="text-base">${message}</div>`;
         overlay.className = 'absolute inset-0 flex flex-col justify-center items-center text-white text-lg font-bold text-center opacity-0 transition-all duration-300 pointer-events-none z-10 p-4 visible';
-        
+
         overlay.classList.remove('bg-green-500/90', 'bg-red-500/90', 'bg-yellow-500/90');
-        
+
         if (type === 'success') overlay.classList.add('bg-green-500/90');
         else if (type === 'error') overlay.classList.add('bg-red-500/90');
         else if (type === 'warning') overlay.classList.add('bg-yellow-500/90');
@@ -82,20 +93,21 @@
                 overlay.classList.remove('visible');
             }, 2500);
         }
-        
+
         textFeedback.textContent = message;
-        textFeedback.className = `p-4 rounded-xl font-medium min-h-[3rem] flex items-center justify-center glass-effect ${
-            type === 'success' ? 'text-green-800 dark:text-green-200' :
+        textFeedback.className = `p-4 rounded-xl font-medium min-h-[3rem] flex items-center justify-center glass-effect ${type === 'success' ? 'text-green-800 dark:text-green-200' :
             type === 'error' ? 'text-red-800 dark:text-red-200' :
-            type === 'warning' ? 'text-yellow-800 dark:text-yellow-200' :
-            'text-blue-800 dark:text-blue-200'
-        }`;
+                type === 'warning' ? 'text-yellow-800 dark:text-yellow-200' :
+                    'text-blue-800 dark:text-blue-200'
+            }`;
     }
 
     function onScanSuccess(decodedText, decodedResult) {
+        // Se for o MESMO código recém-escaneado (dentro do tempo de cooldown), ignora.
+        // Se for um código DIFERENTE, passa direto (instantâneo).
         const currentTime = Date.now();
         if (decodedText === lastScannedHash && (currentTime - lastScanTime) < SCAN_COOLDOWN_MS) {
-            return; 
+            return;
         }
         showOverlayFeedback('processing', '<div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>', `Processando...`);
         lastScannedHash = decodedText;
@@ -109,7 +121,7 @@
         try {
             const response = await fetch(`${API_URL}/guests/${qrHash}/enter`, { method: 'POST' });
             const result = await response.json();
-            
+
             if (!response.ok) {
                 showOverlayFeedback('error', '<i class="fas fa-times-circle"></i>', result.error || 'QR inválido/não encontrado.');
             } else {
@@ -126,30 +138,48 @@
     }
 
     function startQrScanner() {
+        // Reset state
+        lastScannedHash = null;
+        lastScanTime = 0;
+
         document.getElementById('qrReaderMessageContainer').style.display = 'none';
-        document.getElementById('qrScannerWrapper').style.display = 'inline-block';
+        const scannerWrapper = document.getElementById('qrScannerWrapper');
+        scannerWrapper.style.display = 'inline-block';
 
-        const config = {
-            fps: 10,
-            qrbox: { width: 250, height: 350 },
-            rememberLastUsedCamera: true,
-            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
-        };
+        // Pequeno atraso para garantir que o elemento esteja visível no DOM
+        setTimeout(() => {
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 }, // Square box
+                aspectRatio: 1.0
+            };
 
-        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-        .then(() => {
-            document.getElementById('startScanButton').style.display = 'none';
-            document.getElementById('stopScanButton').style.display = 'inline-flex';
-            showOverlayFeedback('info', '<i class="fas fa-camera"></i>', 'Aponte a câmera para um QR Code.');
-        }).catch(err => {
-            stopQrScanner(); // Reseta a UI
-            showOverlayFeedback('error', '<i class="fas fa-exclamation-triangle"></i>', `Erro ao iniciar câmera: ${err}`);
-        });
+            // Tenta usar a câmera traseira
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+                .then(() => {
+                    document.getElementById('startScanButton').style.display = 'none';
+                    document.getElementById('stopScanButton').style.display = 'inline-flex';
+                    showOverlayFeedback('info', '<i class="fas fa-camera"></i>', 'Câmera iniciada. Aponte para o QR.');
+                }).catch(err => {
+                    console.error("Erro start:", err);
+                    stopQrScanner();
+                    // Mostra erro detalhado na tela para debug
+                    showOverlayFeedback('error', '<i class="fas fa-exclamation-triangle"></i>', `Erro: ${err?.message || err}`);
+
+                    // Fallback: Tenta iniciar com configuração mais permissiva se falhar a traseira
+                    if (err?.name === 'OverconstrainedError' || (err?.message && err.message.includes('Constraints'))) {
+                        showOverlayFeedback('warning', '<i class="fas fa-sync"></i>', 'Tentando câmera padrão...');
+                        html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFailure).catch(e2 => {
+                            showOverlayFeedback('error', '<i class="fas fa-video-slash"></i>', `Falha total: ${e2}`);
+                        });
+                    }
+                });
+        }, 100);
     }
 
     async function stopQrScanner() {
         if (html5QrCode && html5QrCode.isScanning) {
-            try { await html5QrCode.stop(); } catch(e) {}
+            try { await html5QrCode.stop(); } catch (e) { }
         }
         document.getElementById('startScanButton').style.display = 'inline-flex';
         document.getElementById('stopScanButton').style.display = 'none';

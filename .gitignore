@@ -6,3 +6,4 @@ __pycache__/
 data/
 .env*
 venv
+persistent_storage/
