@@ -32,8 +32,8 @@
 
     <div class="mt-6 text-sm text-gray-600 dark:text-gray-400">
         <p>Você será redirecionado para a página de pagamento (se aplicável) ou para o seu ingresso.</p>
-        <p class="mt-2">Já tem uma conta? <a href="{{ url_for('login', next=request.url) }}" class="text-primary hover:underline font-semibold">Faça Login</a></p>
-        <p>Não tem uma conta? <a href="{{ url_for('signup', next=request.url) }}" class="text-primary hover:underline font-semibold">Cadastre-se</a></p>
+        <p class="mt-2">Já tem uma conta? <a href="{{ url_for('auth.login', next=request.url) }}" class="text-primary hover:underline font-semibold">Faça Login</a></p>
+        <p>Não tem uma conta? <a href="{{ url_for('auth.signup', next=request.url) }}" class="text-primary hover:underline font-semibold">Cadastre-se</a></p>
     </div>
 </div>
 {% endblock %}

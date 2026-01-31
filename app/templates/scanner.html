@@ -2,7 +2,7 @@
 {% block title %}Check-in: {{ party.name }}{% endblock %}
 {% block header_actions %}
     <!-- MUDANÇA: Botão para esquecer o scanner -->
-    <a href="{{ url_for('forget_scanner') }}" class="glass-effect text-yellow-600 dark:text-yellow-400 px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
+    <a href="{{ url_for('public.forget_scanner') }}" class="glass-effect text-yellow-600 dark:text-yellow-400 px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
         <i class="fas fa-sign-out-alt"></i>
         <span>Trocar Festa</span>
     </a>

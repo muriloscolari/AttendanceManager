@@ -3,11 +3,13 @@
 {% block title %}{{ party.name }} - Gerenciador de Festa{% endblock %}
 
 {% block header_actions %}
-<a href="{{ url_for('dashboard') }}" class="glass-effect text-primary dark:text-white px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
+<a href="{{ url_for('main.dashboard') }}"
+    class="glass-effect text-primary dark:text-white px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
     <i class="fas fa-arrow-left"></i>
     <span>Dashboard</span>
 </a>
-<a href="{{ url_for('public_scanner') }}" class="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
+<a href="{{ url_for('public.public_scanner') }}"
+    class="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
     <i class="fas fa-qrcode"></i>
     <span class="hidden sm:inline">Abrir Scanner</span>
     <span class="sm:hidden">Scanner</span>
@@ -16,35 +18,42 @@
 
 {% block content %}
 
-    <style>
+<style>
     @font-face {
         font-family: 'Birthstone-Regular';
-        src: url('{{ url_for('static', filename='fonts/Birthstone-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/Birthstone-Regular.ttf') }}") format('truetype');
     }
+
     @font-face {
         font-family: 'Ephesis-Regular';
-        src: url('{{ url_for('static', filename='fonts/Ephesis-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/Ephesis-Regular.ttf') }}") format('truetype');
     }
+
     @font-face {
         font-family: 'Montserrat-Regular';
-        src: url('{{ url_for('static', filename='fonts/Montserrat-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/Montserrat-Regular.ttf') }}") format('truetype');
     }
+
     @font-face {
         font-family: 'Radley-Regular';
-        src: url('{{ url_for('static', filename='fonts/Radley-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/Radley-Regular.ttf') }}") format('truetype');
     }
+
     @font-face {
         font-family: 'BebasNeue-Regular';
-        src: url('{{ url_for('static', filename='fonts/BebasNeue-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/BebasNeue-Regular.ttf') }}") format('truetype');
     }
+
     @font-face {
         font-family: 'Cinzel-Regular';
-        src: url('{{ url_for('static', filename='fonts/Cinzel-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/Cinzel-Regular.ttf') }}") format('truetype');
     }
+
     @font-face {
         font-family: 'JosefinSans-Regular';
-        src: url('{{ url_for('static', filename='fonts/JosefinSans-Regular.ttf') }}') format('truetype');
+        src: url("{{ url_for('static', filename='fonts/JosefinSans-Regular.ttf') }}") format('truetype');
     }
+
     .font-button {
         padding: 1rem;
         border-radius: 0.75rem;
@@ -60,63 +69,155 @@
         cursor: pointer;
         border: 2px solid transparent;
     }
+
     .font-button:hover {
         --tw-bg-opacity: 0.2;
         box-shadow: var(--tw-shadow-lg);
     }
+
     .font-button.selected {
         border-color: var(--color-primary);
         box-shadow: 0 0 0 3px var(--color-primary-light), var(--tw-shadow-lg);
     }
-    .modal, .toast-container { transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; }
-    .modal-content, .toast { transition: transform 0.3s ease-in-out; }
-    .modal.show .modal-content, .toast.show { transform: scale(1); }
-    .modal .modal-content, .toast { transform: scale(0.95); }
-    .sortable-header { cursor: pointer; transition: background-color 0.2s; position: relative; }
-    .sortable-header:hover { background-color: rgba(0,0,0,0.05); }
-    .dark .sortable-header:hover { background-color: rgba(255,255,255,0.08); }
-    .sort-icon { display: inline-block; margin-left: 8px; width: 1em; color: #9ca3af; font-weight: 900; }
-    .sort-icon::after { font-family: "Font Awesome 5 Free"; content: "\f0dc"; }
-    .sortable-header.sorted-asc .sort-icon { color: #3b82f6; }
-    .sortable-header.sorted-asc .sort-icon::after { content: "\f0de"; }
-    .sortable-header.sorted-desc .sort-icon { color: #3b82f6; }
-    .sortable-header.sorted-desc .sort-icon::after { content: "\f0dd"; }
-    .pagination-btn { transition: all 0.2s; }
-    .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .fade-in { animation: fadeInAnimation 0.5s ease-in-out; }
-    @keyframes fadeInAnimation { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-    #checkinHourlyChart { cursor: grab; }
-    #checkinHourlyChart:active { cursor: grabbing; }
+
+    .modal,
+    .toast-container {
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .modal-content,
+    .toast {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .modal.show .modal-content,
+    .toast.show {
+        transform: scale(1);
+    }
+
+    .modal .modal-content,
+    .toast {
+        transform: scale(0.95);
+    }
+
+    .sortable-header {
+        cursor: pointer;
+        transition: background-color 0.2s;
+        position: relative;
+    }
+
+    .sortable-header:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .dark .sortable-header:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .sort-icon {
+        display: inline-block;
+        margin-left: 8px;
+        width: 1em;
+        color: #9ca3af;
+        font-weight: 900;
+    }
+
+    .sort-icon::after {
+        font-family: "Font Awesome 5 Free";
+        content: "\f0dc";
+    }
+
+    .sortable-header.sorted-asc .sort-icon {
+        color: #3b82f6;
+    }
+
+    .sortable-header.sorted-asc .sort-icon::after {
+        content: "\f0de";
+    }
+
+    .sortable-header.sorted-desc .sort-icon {
+        color: #3b82f6;
+    }
+
+    .sortable-header.sorted-desc .sort-icon::after {
+        content: "\f0dd";
+    }
+
+    .pagination-btn {
+        transition: all 0.2s;
+    }
+
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .fade-in {
+        animation: fadeInAnimation 0.5s ease-in-out;
+    }
+
+    @keyframes fadeInAnimation {
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #checkinHourlyChart {
+        cursor: grab;
+    }
+
+    #checkinHourlyChart:active {
+        cursor: grabbing;
+    }
 </style>
 
 <body data-party-id="{{ party.id }}">
-    <h1 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">Gerenciando a Festa: <span class="text-primary">{{ party.name }}</span></h1>
+    <h1 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">Gerenciando a Festa: <span
+            class="text-primary">{{ party.name }}</span></h1>
 
     <!-- NAVEGAÇÃO POR ABAS REESTRUTURADA -->
     <div class="glass-card rounded-2xl shadow-2xl p-2 sm:p-4 mb-8">
         <div class="flex flex-col sm:flex-row border-b border-gray-200 dark:border-gray-700">
             <!-- ABA 1: Dashboard -->
-            <button class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary" data-tab="dashboard">
+            <button
+                class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary"
+                data-tab="dashboard">
                 <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
             </button>
             <!-- ABA 2: Análise de Check-in (NOVA ABA) -->
-            <button class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary" data-tab="checkin-analytics">
+            <button
+                class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary"
+                data-tab="checkin-analytics">
                 <i class="fas fa-chart-line mr-2"></i>Análise de Check-in
             </button>
             <!-- ABA 3: Lista de Convidados -->
-            <button class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary" data-tab="guest-list">
+            <button
+                class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary"
+                data-tab="guest-list">
                 <i class="fas fa-users mr-2"></i>Lista de Convidados
             </button>
             <!-- ABA 4: Adicionar e Convidar -->
-            <button class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary" data-tab="add-invite">
+            <button
+                class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary"
+                data-tab="add-invite">
                 <i class="fas fa-user-plus mr-2"></i>Adicionar & Convidar
             </button>
             <!-- ABA 5: Customizar Convite -->
-            <button class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary" data-tab="customize-invite">
+            <button
+                class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary"
+                data-tab="customize-invite">
                 <i class="fas fa-paint-brush mr-2"></i>Customizar Convite
             </button>
             <!-- ABA 6: Configurações -->
-            <button class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary" data-tab="settings">
+            <button
+                class="tab-button flex-1 py-3 text-center text-lg font-semibold text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 border-b-2 border-transparent data-[active=true]:border-primary data-[active=true]:text-primary dark:data-[active=true]:text-primary"
+                data-tab="settings">
                 <i class="fas fa-cog mr-2"></i>Configurações
             </button>
         </div>
@@ -129,35 +230,69 @@
                 <!-- Coluna Esquerda: Estatísticas -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center"><i class="fas fa-chart-pie text-primary mr-3"></i>Estatísticas em Tempo Real</h2>
-                        <button onclick="fetchStats()" class="glass-effect text-primary hover:text-secondary transition-colors p-2 rounded-lg hover:shadow-md"><i class="fas fa-sync-alt"></i></button>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center"><i
+                                class="fas fa-chart-pie text-primary mr-3"></i>Estatísticas em Tempo Real</h2>
+                        <button onclick="fetchStats()"
+                            class="glass-effect text-primary hover:text-secondary transition-colors p-2 rounded-lg hover:shadow-md"><i
+                                class="fas fa-sync-alt"></i></button>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div class="glass-effect p-4 rounded-xl text-center"><i class="fas fa-users text-primary text-2xl mb-2"></i><div class="text-3xl font-bold text-primary" id="statsTotalInvited">-</div><div class="text-sm text-gray-600 dark:text-gray-300">Total Convidados</div></div>
-                        {% if party.ticket_price > 0 %}<div class="glass-effect p-4 rounded-xl text-center"><i class="fas fa-ticket-alt text-blue-600 text-2xl mb-2"></i><div class="text-3xl font-bold text-blue-600" id="statsTotalPaidTickets">-</div><div class="text-sm text-gray-600 dark:text-gray-300">Ingressos Pagos</div></div>{% endif %}
-                        <div class="glass-effect p-4 rounded-xl text-center"><i class="fas fa-check-circle text-success text-2xl mb-2"></i><div class="text-3xl font-bold text-success" id="statsEnteredCount">-</div><div class="text-sm text-gray-600 dark:text-gray-300">Entraram</div></div>
-                        <div class="glass-effect p-4 rounded-xl text-center"><i class="fas fa-times-circle text-danger text-2xl mb-2"></i><div class="text-3xl font-bold text-danger" id="statsNotEnteredCount">-</div><div class="text-sm text-gray-600 dark:text-gray-300">Não Entraram</div></div>
-                        <div class="glass-effect p-4 rounded-xl text-center"><i class="fas fa-percentage text-purple-600 text-2xl mb-2"></i><div class="text-3xl font-bold text-purple-600" id="statsPercentageEntered">-%</div><div class="text-sm text-gray-600 dark:text-gray-300">Comparecimento</div></div>
-                        <div class="glass-effect p-4 rounded-xl text-center"><i class="fas fa-dollar-sign text-teal-600 text-2xl mb-2"></i><div class="text-3xl font-bold text-teal-600" id="statsTotalRevenue">R$ -</div><div class="text-sm text-gray-600 dark:text-gray-300">Faturamento</div></div>
+                        <div class="glass-effect p-4 rounded-xl text-center"><i
+                                class="fas fa-users text-primary text-2xl mb-2"></i>
+                            <div class="text-3xl font-bold text-primary" id="statsTotalInvited">-</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Total Convidados</div>
+                        </div>
+                        {% if party.ticket_price > 0 %}<div class="glass-effect p-4 rounded-xl text-center"><i
+                                class="fas fa-ticket-alt text-blue-600 text-2xl mb-2"></i>
+                            <div class="text-3xl font-bold text-blue-600" id="statsTotalPaidTickets">-</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Ingressos Pagos</div>
+                        </div>{% endif %}
+                        <div class="glass-effect p-4 rounded-xl text-center"><i
+                                class="fas fa-check-circle text-success text-2xl mb-2"></i>
+                            <div class="text-3xl font-bold text-success" id="statsEnteredCount">-</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Entraram</div>
+                        </div>
+                        <div class="glass-effect p-4 rounded-xl text-center"><i
+                                class="fas fa-times-circle text-danger text-2xl mb-2"></i>
+                            <div class="text-3xl font-bold text-danger" id="statsNotEnteredCount">-</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Não Entraram</div>
+                        </div>
+                        <div class="glass-effect p-4 rounded-xl text-center"><i
+                                class="fas fa-percentage text-purple-600 text-2xl mb-2"></i>
+                            <div class="text-3xl font-bold text-purple-600" id="statsPercentageEntered">-%</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Comparecimento</div>
+                        </div>
+                        <div class="glass-effect p-4 rounded-xl text-center"><i
+                                class="fas fa-dollar-sign text-teal-600 text-2xl mb-2"></i>
+                            <div class="text-3xl font-bold text-teal-600" id="statsTotalRevenue">R$ -</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Faturamento</div>
+                        </div>
                     </div>
                 </div>
                 <!-- Coluna Direita: Gráfico e Ações Rápidas -->
                 <div class="space-y-6">
                     <div class="glass-card p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 text-center">Gráfico de Comparecimento</h3>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 text-center">Gráfico de
+                            Comparecimento</h3>
                         <div class="relative h-48"><canvas id="attendanceChart"></canvas></div>
                     </div>
                     <div class="glass-card p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center"><i class="fas fa-bolt text-yellow-500 mr-2"></i>Ações Rápidas</h3>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center"><i
+                                class="fas fa-bolt text-yellow-500 mr-2"></i>Ações Rápidas</h3>
                         <div class="flex flex-col space-y-2">
-                             <a href="#" onclick="showTab('add-invite'); return false;" class="w-full text-center bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">Adicionar Convidado</a>
-                             <a href="{{ url_for('public_party_page', shareable_link_id=party.shareable_link_id) }}" target="_blank" class="w-full text-center glass-effect hover:bg-gray-200 dark:hover:bg-gray-700 text-primary dark:text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">Ver Página Pública</a>
+                            <a href="#" onclick="showTab('add-invite'); return false;"
+                                class="w-full text-center bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">Adicionar
+                                Convidado</a>
+                            <a href="{{ url_for('public.public_party_page', shareable_link_id=party.shareable_link_id) }}"
+                                target="_blank"
+                                class="w-full text-center glass-effect hover:bg-gray-200 dark:hover:bg-gray-700 text-primary dark:text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">Ver
+                                Página Pública</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- ABA 2: CONTEÚDO DA ANÁLISE DE CHECK-IN -->
         <div id="tab-checkin-analytics" class="tab-content pt-6 hidden fade-in">
             <div class="glass-card rounded-2xl shadow-inner p-6">
@@ -166,10 +301,12 @@
                         <i class="fas fa-chart-line text-primary mr-3"></i>Check-ins por Período
                     </h2>
                     <div class="flex items-center gap-4">
-                        <div class="text-sm text-gray-600 dark:text-gray-400 bg-blue-100 dark:bg-gray-700/50 px-3 py-1.5 rounded-full text-center">
+                        <div
+                            class="text-sm text-gray-600 dark:text-gray-400 bg-blue-100 dark:bg-gray-700/50 px-3 py-1.5 rounded-full text-center">
                             <i class="fas fa-mouse-pointer mr-2"></i>Use o scroll para zoom e arraste para navegar
                         </div>
-                        <button id="resetZoomBtn" class="hidden bg-gray-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-gray-600 transition-colors">
+                        <button id="resetZoomBtn"
+                            class="hidden bg-gray-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-gray-600 transition-colors">
                             <i class="fas fa-search-minus mr-2"></i>Resetar Zoom
                         </button>
                     </div>
@@ -177,7 +314,8 @@
                 <div id="checkinChartContainer" class="relative h-96 w-full mt-4">
                     <canvas id="checkinHourlyChart"></canvas>
                 </div>
-                <div id="checkinChartInfo" class="text-center mt-2 text-sm font-semibold text-primary dark:text-secondary"></div>
+                <div id="checkinChartInfo"
+                    class="text-center mt-2 text-sm font-semibold text-primary dark:text-secondary"></div>
             </div>
         </div>
 
@@ -185,22 +323,48 @@
         <div id="tab-guest-list" class="tab-content pt-6 hidden fade-in">
             <div class="glass-card rounded-2xl shadow-inner p-6">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center mb-4 lg:mb-0"><i class="fas fa-users text-primary mr-3"></i>Lista de Convidados<span id="guestCount" class="ml-3 text-sm bg-primary text-white px-2 py-1 rounded-full">0</span></h2>
-                    <div class="flex flex-col sm:flex-row gap-3"><button onclick="exportGuests('csv')" class="bg-success text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center space-x-2"><i class="fas fa-file-csv"></i><span>Exportar CSV</span></button><button onclick="exportGuests('pdf')" class="bg-danger text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center space-x-2"><i class="fas fa-file-pdf"></i><span>Exportar PDF</span></button></div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center mb-4 lg:mb-0"><i
+                            class="fas fa-users text-primary mr-3"></i>Lista de Convidados<span id="guestCount"
+                            class="ml-3 text-sm bg-primary text-white px-2 py-1 rounded-full">0</span></h2>
+                    <div class="flex flex-col sm:flex-row gap-3"><button onclick="exportGuests('csv')"
+                            class="bg-success text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center space-x-2"><i
+                                class="fas fa-file-csv"></i><span>Exportar CSV</span></button><button
+                            onclick="exportGuests('pdf')"
+                            class="bg-danger text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center space-x-2"><i
+                                class="fas fa-file-pdf"></i><span>Exportar PDF</span></button></div>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-4 mb-6"><div class="flex-1 relative"><i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i><input type="text" id="searchInput" placeholder="Buscar por nome..." class="w-full pl-10 pr-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"></div></div>
+                <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <div class="flex-1 relative"><i
+                            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i><input
+                            type="text" id="searchInput" placeholder="Buscar por nome..."
+                            class="w-full pl-10 pr-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+                    </div>
+                </div>
 
                 <div class="hidden lg:block glass-effect rounded-xl overflow-hidden overflow-x-auto">
                     <div class="max-h-[500px] overflow-y-auto">
                         <table class="w-full table-fixed min-w-[1000px]">
                             <thead class="bg-gray-50 dark:bg-gray-800/50 sticky top-0 z-10">
                                 <tr>
-                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 25%" data-sort-by="name" onclick="setSort('name')">Nome<span class="sort-icon"></span></th>
-                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 12%" data-sort-by="payment_status" onclick="setSort('payment_status')">Pagamento<span class="sort-icon"></span></th>
-                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 12%" data-sort-by="purchased_by" onclick="setSort('purchased_by')">Comprado Por<span class="sort-icon"></span></th>
-                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 12%" data-sort-by="entered" onclick="setSort('entered')">Status<span class="sort-icon"></span></th>
-                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 18%" data-sort-by="check_in_time" onclick="setSort('check_in_time')">Check-in<span class="sort-icon"></span></th>
-                                    <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 21%">Ações</th>
+                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        style="width: 25%" data-sort-by="name" onclick="setSort('name')">Nome<span
+                                            class="sort-icon"></span></th>
+                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        style="width: 12%" data-sort-by="payment_status"
+                                        onclick="setSort('payment_status')">Pagamento<span class="sort-icon"></span>
+                                    </th>
+                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        style="width: 12%" data-sort-by="purchased_by"
+                                        onclick="setSort('purchased_by')">Comprado Por<span class="sort-icon"></span>
+                                    </th>
+                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        style="width: 12%" data-sort-by="entered" onclick="setSort('entered')">
+                                        Status<span class="sort-icon"></span></th>
+                                    <th class="sortable-header px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        style="width: 18%" data-sort-by="check_in_time"
+                                        onclick="setSort('check_in_time')">Check-in<span class="sort-icon"></span></th>
+                                    <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                        style="width: 21%">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="guestList" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
@@ -209,7 +373,8 @@
                 </div>
 
                 <div class="lg:hidden max-h-[500px] overflow-y-auto space-y-4" id="guestCardsList"></div>
-                <nav id="paginationControls" class="flex items-center justify-between mt-6 px-4 py-3" aria-label="Pagination"></nav>
+                <nav id="paginationControls" class="flex items-center justify-between mt-6 px-4 py-3"
+                    aria-label="Pagination"></nav>
             </div>
         </div>
 
@@ -218,39 +383,65 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Card: Adicionar Convidado Gratuito -->
                 <div class="glass-card rounded-2xl shadow-inner p-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i class="fas fa-ticket-alt text-success mr-3"></i>Adicionar Convidado Gratuito</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i
+                            class="fas fa-ticket-alt text-success mr-3"></i>Adicionar Convidado Gratuito</h2>
                     <form id="addGuestForm" class="space-y-4">
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <div class="flex-1"><input type="text" id="guestName" placeholder="Nome do Convidado" required class="w-full px-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-400"></div>
-                            <button type="submit" class="bg-gradient-to-r from-success to-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center justify-center space-x-2"><i class="fas fa-plus"></i><span>Adicionar</span></button>
+                            <div class="flex-1"><input type="text" id="guestName" placeholder="Nome do Convidado"
+                                    required
+                                    class="w-full px-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-400">
+                            </div>
+                            <button type="submit"
+                                class="bg-gradient-to-r from-success to-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center justify-center space-x-2"><i
+                                    class="fas fa-plus"></i><span>Adicionar</span></button>
                         </div>
                     </form>
-                    <div id="newQrCodeArea" class="mt-6 p-4 glass-effect rounded-xl text-center" style="display:none;"><p id="guestAddedInfo" class="font-semibold mb-4"></p><img id="newGuestQrImage" src="" alt="QR Code" class="mx-auto mb-4 rounded-lg shadow-md" style="display:none; max-width: 150px;"><a id="downloadQrLink" href="#" download class="inline-flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors" style="display:none;"><i class="fas fa-download"></i><span>Baixar QR Code</span></a></div>
+                    <div id="newQrCodeArea" class="mt-6 p-4 glass-effect rounded-xl text-center" style="display:none;">
+                        <p id="guestAddedInfo" class="font-semibold mb-4"></p><img id="newGuestQrImage" src=""
+                            alt="QR Code" class="mx-auto mb-4 rounded-lg shadow-md"
+                            style="display:none; max-width: 150px;"><a id="downloadQrLink" href="#" download
+                            class="inline-flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+                            style="display:none;"><i class="fas fa-download"></i><span>Baixar QR Code</span></a>
+                    </div>
                 </div>
 
                 <!-- Card: Convidar para Pagar Ingresso -->
                 <div class="glass-card rounded-2xl shadow-inner p-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i class="fas fa-money-check-alt text-blue-500 mr-3"></i>Convidar para Pagar Ingresso</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i
+                            class="fas fa-money-check-alt text-blue-500 mr-3"></i>Convidar para Pagar Ingresso</h2>
                     {% if party.ticket_price > 0 %}
-                        <form id="inviteForPaymentForm" class="space-y-4">
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <div class="flex-1"><input type="text" id="guestNameForPayment" placeholder="Nome do Convidado para Pagamento" required class="w-full px-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"></div>
-                                <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center justify-center space-x-2"><i class="fas fa-link"></i><span>Gerar Link</span></button>
+                    <form id="inviteForPaymentForm" class="space-y-4">
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <div class="flex-1"><input type="text" id="guestNameForPayment"
+                                    placeholder="Nome do Convidado para Pagamento" required
+                                    class="w-full px-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
                             </div>
-                        </form>
-                        <div id="paymentLinkArea" class="mt-6 p-4 glass-effect rounded-xl text-center" style="display:none;">
-                            <p id="paymentLinkInfo" class="font-semibold mb-4"></p>
-                            <div class="relative mb-4">
-                                <input type="text" id="generatedPaymentLink" readonly class="w-full text-xs px-2 py-2 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 break-all">
-                                <button onclick="copyToClipboard('#generatedPaymentLink', '#copyPaymentLinkIcon')" class="absolute right-1 top-1/2 -translate-y-1/2 bg-primary text-white p-2 rounded-md hover:bg-secondary transition-colors text-xs"><i id="copyPaymentLinkIcon" class="fas fa-copy"></i></button>
-                            </div>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Copie e envie este link para o convidado.</p>
+                            <button type="submit"
+                                class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center justify-center space-x-2"><i
+                                    class="fas fa-link"></i><span>Gerar Link</span></button>
                         </div>
+                    </form>
+                    <div id="paymentLinkArea" class="mt-6 p-4 glass-effect rounded-xl text-center"
+                        style="display:none;">
+                        <p id="paymentLinkInfo" class="font-semibold mb-4"></p>
+                        <div class="relative mb-4">
+                            <input type="text" id="generatedPaymentLink" readonly
+                                class="w-full text-xs px-2 py-2 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 break-all">
+                            <button onclick="copyToClipboard('#generatedPaymentLink', '#copyPaymentLinkIcon')"
+                                class="absolute right-1 top-1/2 -translate-y-1/2 bg-primary text-white p-2 rounded-md hover:bg-secondary transition-colors text-xs"><i
+                                    id="copyPaymentLinkIcon" class="fas fa-copy"></i></button>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Copie e envie este link para o convidado.
+                        </p>
+                    </div>
                     {% else %}
-                        <div class="bg-yellow-100 dark:bg-yellow-900/50 border-l-4 border-yellow-500 text-yellow-700 dark:text-yellow-300 p-4 rounded-r-lg" role="alert">
-                            <p class="font-bold">Defina o Preço do Ingresso</p>
-                            <p>Para gerar links de pagamento, <a href="#" onclick="showTab('settings'); return false;" class="font-bold underline hover:text-yellow-500">defina o valor do ingresso</a> nas Configurações.</p>
-                        </div>
+                    <div class="bg-yellow-100 dark:bg-yellow-900/50 border-l-4 border-yellow-500 text-yellow-700 dark:text-yellow-300 p-4 rounded-r-lg"
+                        role="alert">
+                        <p class="font-bold">Defina o Preço do Ingresso</p>
+                        <p>Para gerar links de pagamento, <a href="#" onclick="showTab('settings'); return false;"
+                                class="font-bold underline hover:text-yellow-500">defina o valor do ingresso</a> nas
+                            Configurações.</p>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -260,16 +451,22 @@
         <div id="tab-customize-invite" class="tab-content pt-6 hidden fade-in">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i class="fas fa-paint-brush text-primary mr-3"></i>Escolha a Fonte</h2>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4">Escolha a fonte para o nome da sua festa no convite:</p>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i
+                            class="fas fa-paint-brush text-primary mr-3"></i>Escolha a Fonte</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Escolha a fonte para o nome da sua festa no
+                        convite:</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="font-selection-container">
                         <!-- Font buttons will be loaded here by JavaScript -->
                     </div>
-                    <button id="saveFontButton" class="mt-6 w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale">Salvar Fonte Escolhida</button>
+                    <button id="saveFontButton"
+                        class="mt-6 w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale">Salvar
+                        Fonte Escolhida</button>
                 </div>
                 <div class="glass-card rounded-2xl shadow-inner p-6 flex flex-col items-center justify-center">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i class="fas fa-eye text-primary mr-3"></i>Pré-visualização do Convite</h2>
-                    <div id="invite-preview-container" class="w-full max-w-sm border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i
+                            class="fas fa-eye text-primary mr-3"></i>Pré-visualização do Convite</h2>
+                    <div id="invite-preview-container"
+                        class="w-full max-w-sm border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
                         <!-- Conteúdo do convite será carregado aqui -->
                         <div class="p-4 text-center text-gray-500 dark:text-gray-400">
                             Carregando pré-visualização...
@@ -285,21 +482,64 @@
                 <!-- Coluna Principal (2/3) -->
                 <div class="md:col-span-2 space-y-6">
                     <div class="glass-card rounded-2xl shadow-inner p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i class="fas fa-edit text-primary mr-3"></i>Informações Principais</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center"><i
+                                class="fas fa-edit text-primary mr-3"></i>Informações Principais</h2>
                         <form id="updatePartyDetailsForm" data-party-id="{{ party.id }}">
                             <div class="space-y-4">
-                                <div><label for="party_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome da Festa:</label><input type="text" name="party_name" id="party_name" value="{{ party.name }}" required class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary"></div>
-                                <div><label for="public_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição Pública:</label><textarea name="public_description" id="public_description" rows="4" class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">{{ party.public_description or '' }}</textarea></div>
-                                <hr class="dark:border-gray-700">
-                                <div><label for="ticket_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Preço do Ingresso (R$):</label><input type="number" step="0.01" min="0" name="ticket_price" id="ticket_price" value="{{ '%.2f' | format(party.ticket_price) }}" class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary"><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Defina 0.00 para ingresso gratuito.</p></div>
-                                <div class="flex items-center"><input type="checkbox" name="allow_public_purchase" id="allow_public_purchase" class="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary" {% if party.allow_public_purchase %}checked{% endif %}><label for="allow_public_purchase" class="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Permitir compra direta pela página pública</label></div>
-                                <hr class="dark:border-gray-700">
-                                <div><label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Localização do Evento (Endereço):</label><input type="text" name="location" id="location" value="{{ party.location or '' }}" placeholder="Ex: Rua Exemplo, 123 - Cidade, Estado" class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary"></div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div><label for="event_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data:</label><input type="date" name="event_date" id="event_date" value="{{ party.event_date.strftime('%Y-%m-%d') if party.event_date else '' }}" class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary"></div>
-                                    <div><label for="event_time" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Hora:</label><input type="time" name="event_time" id="event_time" value="{{ party.event_time.strftime('%H:%M') if party.event_time else '' }}" class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary"></div>
+                                <div><label for="party_name"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome da
+                                        Festa:</label><input type="text" name="party_name" id="party_name"
+                                        value="{{ party.name }}" required
+                                        class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">
                                 </div>
-                                <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale">Salvar Alterações</button>
+                                <div><label for="public_description"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição
+                                        Pública:</label><textarea name="public_description" id="public_description"
+                                        rows="4"
+                                        class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">{{ party.public_description or '' }}</textarea>
+                                </div>
+                                <hr class="dark:border-gray-700">
+                                <div><label for="ticket_price"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Preço do
+                                        Ingresso (R$):</label><input type="number" step="0.01" min="0"
+                                        name="ticket_price" id="ticket_price"
+                                        value="{{ '%.2f' | format(party.ticket_price) }}"
+                                        class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Defina 0.00 para ingresso
+                                        gratuito.</p>
+                                </div>
+                                <div class="flex items-center"><input type="checkbox" name="allow_public_purchase"
+                                        id="allow_public_purchase"
+                                        class="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary" {% if
+                                        party.allow_public_purchase %}checked{% endif %}><label
+                                        for="allow_public_purchase"
+                                        class="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Permitir
+                                        compra direta pela página pública</label></div>
+                                <hr class="dark:border-gray-700">
+                                <div><label for="location"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Localização
+                                        do Evento (Endereço):</label><input type="text" name="location" id="location"
+                                        value="{{ party.location or '' }}"
+                                        placeholder="Ex: Rua Exemplo, 123 - Cidade, Estado"
+                                        class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label for="event_date"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data:</label><input
+                                            type="date" name="event_date" id="event_date"
+                                            value="{{ party.event_date.strftime('%Y-%m-%d') if party.event_date else '' }}"
+                                            class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">
+                                    </div>
+                                    <div><label for="event_time"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Hora:</label><input
+                                            type="time" name="event_time" id="event_time"
+                                            value="{{ party.event_time.strftime('%H:%M') if party.event_time else '' }}"
+                                            class="mt-1 w-full text-sm glass-effect rounded-lg p-2 focus:ring-primary focus:border-primary">
+                                    </div>
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale">Salvar
+                                    Alterações</button>
                             </div>
                         </form>
                     </div>
@@ -307,34 +547,69 @@
                 <!-- Coluna Lateral (1/3) -->
                 <div class="space-y-6">
                     <div class="glass-card rounded-2xl shadow-inner p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"><i class="fas fa-image text-purple-500 mr-3"></i>Logo & Identidade</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"><i
+                                class="fas fa-image text-purple-500 mr-3"></i>Logo & Identidade</h2>
                         <form id="uploadLogoForm" data-party-id="{{ party.id }}" enctype="multipart/form-data">
-                            {% if party.logo_filename %}<img id="partyLogoImage" src="{{ url_for('serve_persistent_file', filename='party_logos/' + party.logo_filename) }}?v={{ range(1, 1000) | random }}" alt="Logo atual" class="w-24 h-24 rounded-full object-cover my-2 border-2 border-primary mx-auto">{% endif %}
-                            <input type="file" name="party_logo" id="party_logo" class="text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 w-full">
-                            <button type="submit" class="mt-2 w-full text-sm bg-primary text-white py-2 px-3 rounded-lg hover:bg-secondary"><i class="fas fa-upload mr-2"></i>Enviar Logo</button>
+                            {% if party.logo_filename %}<img id="partyLogoImage"
+                                src="{{ url_for('main.serve_persistent_file', filename='party_logos/' + party.logo_filename) }}?v={{ range(1, 1000) | random }}"
+                                alt="Logo atual"
+                                class="w-24 h-24 rounded-full object-cover my-2 border-2 border-primary mx-auto">{%
+                            endif %}
+                            <input type="file" name="party_logo" id="party_logo"
+                                class="text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 w-full">
+                            <button type="submit"
+                                class="mt-2 w-full text-sm bg-primary text-white py-2 px-3 rounded-lg hover:bg-secondary"><i
+                                    class="fas fa-upload mr-2"></i>Enviar Logo</button>
                         </form>
                     </div>
                     <div class="glass-card rounded-2xl shadow-inner p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"><i class="fas fa-share-alt text-teal-500 mr-3"></i>Links & Compartilhamento</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"><i
+                                class="fas fa-share-alt text-teal-500 mr-3"></i>Links & Compartilhamento</h2>
                         <div class="space-y-4">
-                            {% if party.owner == current_user %}<div class="space-y-1"><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Código de Colaborador:</label><div class="relative"><input type="text" id="shareCode" value="{{ party.share_code }}" readonly class="w-full text-lg font-mono tracking-widest px-2 py-2 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 break-all"><button onclick="copyToClipboard('#shareCode', '#copyShareBtnIcon')" class="absolute right-1 top-1/2 -translate-y-1/2 bg-purple-500 text-white p-2 rounded-md hover:bg-purple-600 transition-colors text-xs"><i id="copyShareBtnIcon" class="fas fa-copy"></i></button></div></div>{% endif %}
+                            {% if party.owner == current_user %}<div class="space-y-1"><label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Código de
+                                    Colaborador:</label>
+                                <div class="relative"><input type="text" id="shareCode" value="{{ party.share_code }}"
+                                        readonly
+                                        class="w-full text-lg font-mono tracking-widest px-2 py-2 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 break-all"><button
+                                        onclick="copyToClipboard('#shareCode', '#copyShareBtnIcon')"
+                                        class="absolute right-1 top-1/2 -translate-y-1/2 bg-purple-500 text-white p-2 rounded-md hover:bg-purple-600 transition-colors text-xs"><i
+                                            id="copyShareBtnIcon" class="fas fa-copy"></i></button></div>
+                            </div>{% endif %}
                             <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Link da Página Pública:</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Link da Página
+                                    Pública:</label>
                                 <div class="relative">
-                                    <input type="text" id="shareableLink" value="{{ url_for('public_party_page', shareable_link_id=party.shareable_link_id, _external=True) }}" readonly class="w-full text-xs px-2 py-2 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 break-all">
-                                    <button onclick="copyToClipboard('#shareableLink', '#copyBtnIcon')" class="absolute right-1 top-1/2 -translate-y-1/2 bg-primary text-white p-2 rounded-md hover:bg-secondary transition-colors text-xs">
+                                    <input type="text" id="shareableLink"
+                                        value="{{ url_for('public.public_party_page', shareable_link_id=party.shareable_link_id, _external=True) }}"
+                                        readonly
+                                        class="w-full text-xs px-2 py-2 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 break-all">
+                                    <button onclick="copyToClipboard('#shareableLink', '#copyBtnIcon')"
+                                        class="absolute right-1 top-1/2 -translate-y-1/2 bg-primary text-white p-2 rounded-md hover:bg-secondary transition-colors text-xs">
                                         <i id="copyBtnIcon" class="fas fa-copy"></i>
                                     </button>
                                 </div>
-                                <a href="{{ url_for('public_party_page', shareable_link_id=party.shareable_link_id) }}" target="_blank" class="inline-block mt-2 text-sm text-primary hover:underline">
+                                <a href="{{ url_for('public.public_party_page', shareable_link_id=party.shareable_link_id) }}"
+                                    target="_blank" class="inline-block mt-2 text-sm text-primary hover:underline">
                                     Abrir página pública <i class="fas fa-external-link-alt ml-1"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card rounded-2xl shadow-inner p-6 border-2 border-transparent dark:border-transparent hover:border-danger dark:hover:border-danger transition-colors">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"><i class="fas fa-exclamation-triangle text-danger mr-3"></i>Zona de Perigo</h2>
-                        <form id="toggleGuestCountForm" data-party-id="{{ party.id }}"><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visibilidade da Contagem de Convidados:</label><div class="flex items-center justify-between mt-1"><span class="text-sm font-bold {{ 'text-green-500' if party.show_guest_count else 'text-red-500' }}">{% if party.show_guest_count %} Visível {% else %} Oculto {% endif %}</span><button type="submit" class="text-xs bg-gray-500 text-white py-1 px-3 rounded-lg hover:bg-gray-600">{% if party.show_guest_count %} Ocultar {% else %} Mostrar {% endif %}</button></div></form>
+                    <div
+                        class="glass-card rounded-2xl shadow-inner p-6 border-2 border-transparent dark:border-transparent hover:border-danger dark:hover:border-danger transition-colors">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"><i
+                                class="fas fa-exclamation-triangle text-danger mr-3"></i>Zona de Perigo</h2>
+                        <form id="toggleGuestCountForm" data-party-id="{{ party.id }}"><label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visibilidade da
+                                Contagem de Convidados:</label>
+                            <div class="flex items-center justify-between mt-1"><span
+                                    class="text-sm font-bold {{ 'text-green-500' if party.show_guest_count else 'text-red-500' }}">{%
+                                    if party.show_guest_count %} Visível {% else %} Oculto {% endif %}</span><button
+                                    type="submit"
+                                    class="text-xs bg-gray-500 text-white py-1 px-3 rounded-lg hover:bg-gray-600">{% if
+                                    party.show_guest_count %} Ocultar {% else %} Mostrar {% endif %}</button></div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -342,9 +617,45 @@
     </div>
 
     <!-- MODAIS -->
-    <div id="confirmationModal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 hidden opacity-0 visibility-hidden"><div class="modal-content glass-card rounded-2xl shadow-2xl p-6 w-full max-w-md text-center"><h3 id="modalTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-4"></h3><p id="modalMessage" class="text-gray-600 dark:text-gray-400 mb-6"></p><div class="flex justify-center gap-4"><button id="modalCancelBtn" class="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-2 rounded-lg font-semibold hover:opacity-80 transition-opacity">Cancelar</button><button id="modalConfirmBtn" class="bg-danger text-white px-6 py-2 rounded-lg font-bold hover:opacity-80 transition-opacity">Confirmar</button></div></div></div>
-    <div id="editModal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 hidden opacity-0 visibility-hidden"><div class="modal-content glass-card rounded-2xl shadow-2xl p-6 w-full max-w-md"><h3 id="editModalTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-4">Editar Nome do Convidado</h3><div><label for="editModalInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Novo nome:</label><input type="text" id="editModalInput" class="mt-1 w-full px-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"></div><div class="flex justify-end gap-4 mt-6"><button id="editModalCancelBtn" class="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-2 rounded-lg font-semibold hover:opacity-80 transition-opacity">Cancelar</button><button id="editModalConfirmBtn" class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:opacity-80 transition-opacity">Salvar</button></div></div></div>
-    <div id="qrCodeModal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 hidden opacity-0 visibility-hidden"><div class="modal-content glass-card rounded-2xl shadow-2xl p-6 w-full max-w-xs text-center"><h3 id="qrModalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4"></h3><img id="qrModalImage" src="" alt="QR Code" class="mx-auto mb-4 rounded-lg shadow-md w-full max-w-[250px]"><a id="qrModalDownload" href="#" download class="inline-flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"><i class="fas fa-download"></i><span>Baixar</span></a><button id="qrModalCloseBtn" class="mt-4 text-sm text-gray-500 dark:text-gray-400 hover:underline">Fechar</button></div></div>
+    <div id="confirmationModal"
+        class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 hidden opacity-0 visibility-hidden">
+        <div class="modal-content glass-card rounded-2xl shadow-2xl p-6 w-full max-w-md text-center">
+            <h3 id="modalTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-4"></h3>
+            <p id="modalMessage" class="text-gray-600 dark:text-gray-400 mb-6"></p>
+            <div class="flex justify-center gap-4"><button id="modalCancelBtn"
+                    class="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-2 rounded-lg font-semibold hover:opacity-80 transition-opacity">Cancelar</button><button
+                    id="modalConfirmBtn"
+                    class="bg-danger text-white px-6 py-2 rounded-lg font-bold hover:opacity-80 transition-opacity">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    <div id="editModal"
+        class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 hidden opacity-0 visibility-hidden">
+        <div class="modal-content glass-card rounded-2xl shadow-2xl p-6 w-full max-w-md">
+            <h3 id="editModalTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-4">Editar Nome do
+                Convidado</h3>
+            <div><label for="editModalInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Novo
+                    nome:</label><input type="text" id="editModalInput"
+                    class="mt-1 w-full px-4 py-3 glass-effect rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div class="flex justify-end gap-4 mt-6"><button id="editModalCancelBtn"
+                    class="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-2 rounded-lg font-semibold hover:opacity-80 transition-opacity">Cancelar</button><button
+                    id="editModalConfirmBtn"
+                    class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:opacity-80 transition-opacity">Salvar</button>
+            </div>
+        </div>
+    </div>
+    <div id="qrCodeModal"
+        class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 hidden opacity-0 visibility-hidden">
+        <div class="modal-content glass-card rounded-2xl shadow-2xl p-6 w-full max-w-xs text-center">
+            <h3 id="qrModalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4"></h3><img
+                id="qrModalImage" src="" alt="QR Code" class="mx-auto mb-4 rounded-lg shadow-md w-full max-w-[250px]"><a
+                id="qrModalDownload" href="#" download
+                class="inline-flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"><i
+                    class="fas fa-download"></i><span>Baixar</span></a><button id="qrModalCloseBtn"
+                class="mt-4 text-sm text-gray-500 dark:text-gray-400 hover:underline">Fechar</button>
+        </div>
+    </div>
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-3 w-full max-w-xs"></div>
 
 </body>
@@ -354,151 +665,152 @@
 {% block scripts %}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-    // Handle guest count visibility form
-    const toggleGuestCountForm = document.getElementById('toggleGuestCountForm');
-    if (toggleGuestCountForm) {
-        toggleGuestCountForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const partyId = this.dataset.partyId;
-            const button = this.querySelector('button[type="submit"]');
-            const statusSpan = this.querySelector('span');
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle guest count visibility form
+        const toggleGuestCountForm = document.getElementById('toggleGuestCountForm');
+        if (toggleGuestCountForm) {
+            toggleGuestCountForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const partyId = this.dataset.partyId;
+                const button = this.querySelector('button[type="submit"]');
+                const statusSpan = this.querySelector('span');
 
-            fetch(`/party/${partyId}/toggle_guest_count`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    statusSpan.textContent = data.show_guest_count ? 'Visível' : 'Oculto';
-                    statusSpan.className = data.show_guest_count ? 'text-sm font-bold text-green-500' : 'text-sm font-bold text-red-500';
-                    button.textContent = data.show_guest_count ? 'Ocultar' : 'Mostrar';
-                    showToast(data.message, 'success');
-                } else {
-                    showToast(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('Ocorreu um erro.', 'error');
+                fetch(`/party/${partyId}/toggle_guest_count`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            statusSpan.textContent = data.show_guest_count ? 'Visível' : 'Oculto';
+                            statusSpan.className = data.show_guest_count ? 'text-sm font-bold text-green-500' : 'text-sm font-bold text-red-500';
+                            button.textContent = data.show_guest_count ? 'Ocultar' : 'Mostrar';
+                            showToast(data.message, 'success');
+                        } else {
+                            showToast(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Ocorreu um erro.', 'error');
+                    });
             });
-        });
-    }
+        }
 
-    // Handle logo upload form
-    const uploadLogoForm = document.getElementById('uploadLogoForm');
-    if (uploadLogoForm) {
-        uploadLogoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const partyId = this.dataset.partyId;
-            const formData = new FormData(this);
-            const button = this.querySelector('button[type="submit"]');
-            const originalButtonText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            button.disabled = true;
+        // Handle logo upload form
+        const uploadLogoForm = document.getElementById('uploadLogoForm');
+        if (uploadLogoForm) {
+            uploadLogoForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const partyId = this.dataset.partyId;
+                const formData = new FormData(this);
+                const button = this.querySelector('button[type="submit"]');
+                const originalButtonText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                button.disabled = true;
 
-            fetch(`/party/${partyId}/upload_logo`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const logoImage = document.getElementById('partyLogoImage');
-                    if (logoImage) {
-                        logoImage.src = data.logo_url + '?v=' + new Date().getTime();
+                fetch(`/party/${partyId}/upload_logo`, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const logoImage = document.getElementById('partyLogoImage');
+                            if (logoImage) {
+                                logoImage.src = data.logo_url + '?v=' + new Date().getTime();
+                            } else {
+                                // If the image element doesn't exist, create it
+                                const newLogoImage = document.createElement('img');
+                                newLogoImage.id = 'partyLogoImage';
+                                newLogoImage.src = data.logo_url + '?v=' + new Date().getTime();
+                                newLogoImage.alt = 'Logo atual';
+                                newLogoImage.className = 'w-24 h-24 rounded-full object-cover my-2 border-2 border-primary mx-auto';
+                                this.prepend(newLogoImage);
+                            }
+                            showToast(data.message, 'success');
+                        } else {
+                            showToast(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Ocorreu um erro ao enviar o logo.', 'error');
+                    })
+                    .finally(() => {
+                        button.innerHTML = originalButtonText;
+                        button.disabled = false;
+                        this.reset(); // Clear the file input
+                    });
+            });
+        }
+
+        // Handle party details update form
+        const updatePartyDetailsForm = document.getElementById('updatePartyDetailsForm');
+        if (updatePartyDetailsForm) {
+            updatePartyDetailsForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const partyId = this.dataset.partyId;
+                const formData = new FormData(this);
+                const button = this.querySelector('button[type="submit"]');
+                const originalButtonText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                button.disabled = true;
+
+                // Convert FormData to a JSON object
+                let object = {};
+                formData.forEach((value, key) => {
+                    // Handle checkbox value
+                    if (key === 'allow_public_purchase') {
+                        object[key] = true;
                     } else {
-                        // If the image element doesn't exist, create it
-                        const newLogoImage = document.createElement('img');
-                        newLogoImage.id = 'partyLogoImage';
-                        newLogoImage.src = data.logo_url + '?v=' + new Date().getTime();
-                        newLogoImage.alt = 'Logo atual';
-                        newLogoImage.className = 'w-24 h-24 rounded-full object-cover my-2 border-2 border-primary mx-auto';
-                        this.prepend(newLogoImage);
+                        object[key] = value;
                     }
-                    showToast(data.message, 'success');
-                } else {
-                    showToast(data.message, 'error');
+                });
+                // If checkbox was not checked, it won't be in formData, so set it to false
+                if (!object.hasOwnProperty('allow_public_purchase')) {
+                    object['allow_public_purchase'] = false;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('Ocorreu um erro ao enviar o logo.', 'error');
-            })
-            .finally(() => {
-                button.innerHTML = originalButtonText;
-                button.disabled = false;
-                this.reset(); // Clear the file input
+
+
+                fetch(`/party/${partyId}/update_details`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(object)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast(data.message, 'success');
+                            // Optionally, update the party name in the header if it changed
+                            if (data.party_name) {
+                                document.querySelector('h1 .text-primary').textContent = data.party_name;
+                            }
+                        } else {
+                            showToast(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Ocorreu um erro ao salvar as alterações.', 'error');
+                    })
+                    .finally(() => {
+                        button.innerHTML = originalButtonText;
+                        button.disabled = false;
+                    });
             });
-        });
-    }
-
-    // Handle party details update form
-    const updatePartyDetailsForm = document.getElementById('updatePartyDetailsForm');
-    if (updatePartyDetailsForm) {
-        updatePartyDetailsForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const partyId = this.dataset.partyId;
-            const formData = new FormData(this);
-            const button = this.querySelector('button[type="submit"]');
-            const originalButtonText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-            button.disabled = true;
-
-            // Convert FormData to a JSON object
-            let object = {};
-            formData.forEach((value, key) => {
-                // Handle checkbox value
-                if (key === 'allow_public_purchase') {
-                    object[key] = true;
-                } else {
-                    object[key] = value;
-                }
-            });
-            // If checkbox was not checked, it won't be in formData, so set it to false
-            if (!object.hasOwnProperty('allow_public_purchase')) {
-                object['allow_public_purchase'] = false;
-            }
-
-
-            fetch(`/party/${partyId}/update_details`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(object)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    // Optionally, update the party name in the header if it changed
-                    if (data.party_name) {
-                        document.querySelector('h1 .text-primary').textContent = data.party_name;
-                    }
-                } else {
-                    showToast(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('Ocorreu um erro ao salvar as alterações.', 'error');
-            })
-            .finally(() => {
-                button.innerHTML = originalButtonText;
-                button.disabled = false;
-            });
-        });
-    }
-});
+        }
+    });
     function fallbackCopyTextToClipboard(text, iconSelector) {
         const textArea = document.createElement("textarea");
         textArea.value = text;
@@ -565,7 +877,7 @@
 
     // --- VARIÁVEIS GLOBAIS ---
     const partyId = document.body.getAttribute('data-party-id');
-    const API_URL = `/api/party/${partyId}`;
+    const API_URL = `/party/api/${partyId}`;
     const SEARCH_DEBOUNCE_MS = 300;
     const GUESTS_PER_PAGE = 50;
     let appState = { currentPage: 1, totalPages: 1, sortBy: 'name', sortDir: 'asc', searchTerm: '' };
@@ -577,8 +889,8 @@
     let isCheckinChartInitialized = false; // Flag para inicializar apenas uma vez
 
 
-    function debounce(func, delay) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); }; }
-    
+    function debounce(func, delay) { let timeout; return function (...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); }; }
+
     document.addEventListener('DOMContentLoaded', () => {
         const tabButtons = document.querySelectorAll('.tab-button');
         tabButtons.forEach(button => {
@@ -592,7 +904,7 @@
         fetchData();
         const addGuestForm = document.getElementById('addGuestForm');
         if (addGuestForm) { addGuestForm.addEventListener('submit', (e) => { e.preventDefault(); addGuest(); }); }
-        
+
         const inviteForPaymentForm = document.getElementById('inviteForPaymentForm');
         if (inviteForPaymentForm) { inviteForPaymentForm.addEventListener('submit', (e) => { e.preventDefault(); inviteGuestForPayment(); }); }
 
@@ -621,7 +933,7 @@
         const tabContent = document.getElementById(`tab-${tabId}`);
         tabContent.classList.remove('hidden');
         document.querySelector(`.tab-button[data-tab="${tabId}"]`).dataset.active = 'true';
-        
+
         animateElements(`#tab-${tabId} .glass-effect, #tab-${tabId} .glass-card`);
 
         if (tabId === 'dashboard') {
@@ -636,7 +948,7 @@
     function showToast(message, type = 'info') { const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500', warning: 'bg-yellow-500' }; toast.className = `toast ${colors[type]} text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition-all duration-300 opacity-0 -translate-y-2`; toast.textContent = message; container.appendChild(toast); requestAnimationFrame(() => { toast.classList.remove('opacity-0', '-translate-y-2'); }); setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-2'); toast.addEventListener('transitionend', () => toast.remove()); }, 3000); }
     function showConfirmationModal({ title, message, confirmText, onConfirm }) { const modal = document.getElementById('confirmationModal'); modal.querySelector('#modalTitle').textContent = title; modal.querySelector('#modalMessage').textContent = message; const confirmBtn = modal.querySelector('#modalConfirmBtn'); confirmBtn.textContent = confirmText; const show = () => { modal.classList.remove('hidden'); requestAnimationFrame(() => modal.classList.remove('opacity-0', 'visibility-hidden')); }; const hide = () => { modal.classList.add('opacity-0', 'visibility-hidden'); setTimeout(() => modal.classList.add('hidden'), 300); }; const confirmHandler = () => { onConfirm(); hide(); }; const cancelHandler = () => hide(); confirmBtn.onclick = confirmHandler; modal.querySelector('#modalCancelBtn').onclick = cancelHandler; modal.onclick = (e) => { if (e.target === modal) cancelHandler(); }; show(); }
     function showEditModal({ currentName, onConfirm }) { const modal = document.getElementById('editModal'); const input = modal.querySelector('#editModalInput'); input.value = currentName; const show = () => { modal.classList.remove('hidden'); requestAnimationFrame(() => modal.classList.remove('opacity-0', 'visibility-hidden')); }; const hide = () => { modal.classList.add('opacity-0', 'visibility-hidden'); setTimeout(() => modal.classList.add('hidden'), 300); }; const confirmHandler = () => { const newName = input.value.trim(); if (newName && newName !== currentName) { onConfirm(newName); hide(); } else if (!newName) { showToast('O nome não pode ser vazio.', 'error'); } else { hide(); } }; modal.querySelector('#editModalConfirmBtn').onclick = confirmHandler; modal.querySelector('#editModalCancelBtn').onclick = hide; modal.onclick = (e) => { if (e.target === modal) hide(); }; input.onkeydown = (e) => { if (e.key === 'Enter') confirmHandler(); }; show(); input.focus(); }
-    
+
     function showQrCodeModal(guestName, qrImageUrl) {
         const modal = document.getElementById('qrCodeModal');
         modal.querySelector('#qrModalTitle').textContent = `QR Code de ${guestName}`;
@@ -647,13 +959,13 @@
 
         const show = () => { modal.classList.remove('hidden'); requestAnimationFrame(() => modal.classList.remove('opacity-0', 'visibility-hidden')); };
         const hide = () => { modal.classList.add('opacity-0', 'visibility-hidden'); setTimeout(() => { modal.classList.add('hidden'); modal.querySelector('#qrModalImage').src = ''; }, 300); };
-        
+
         modal.querySelector('#qrModalCloseBtn').onclick = hide;
         modal.onclick = (e) => { if (e.target === modal) hide(); };
-        
+
         show();
     }
-    
+
     // --- LÓGICA DO GRÁFICO DE CHECK-IN ---
     async function initCheckinAnalyticsChart() {
         if (isCheckinChartInitialized) return;
@@ -662,7 +974,7 @@
         const chartContainer = document.getElementById('checkinChartContainer');
         const resetButton = document.getElementById('resetZoomBtn');
         chartContainer.innerHTML = `<div class="flex items-center justify-center h-full"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>`;
-        
+
         try {
             const response = await fetch(`${API_URL}/checkin_data`);
             if (!response.ok) throw new Error('Falha ao buscar dados de check-in.');
@@ -670,16 +982,16 @@
             rawCheckinData = data.check_ins.map(ts => new Date(ts));
 
             if (rawCheckinData.length < 2) {
-                 chartContainer.innerHTML = `<div class="flex items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 font-semibold">São necessários pelo menos 2 check-ins para gerar o gráfico.</div>`;
-                 return;
+                chartContainer.innerHTML = `<div class="flex items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 font-semibold">São necessários pelo menos 2 check-ins para gerar o gráfico.</div>`;
+                return;
             }
-            
+
             chartContainer.innerHTML = `<canvas id="checkinHourlyChart"></canvas>`;
             resetButton.classList.remove('hidden');
             resetButton.onclick = () => {
-                if(checkinChartInstance) checkinChartInstance.resetZoom();
+                if (checkinChartInstance) checkinChartInstance.resetZoom();
             };
-            
+
             updateCheckinChart();
 
         } catch (error) {
@@ -687,11 +999,11 @@
             showToast(error.message, 'error');
         }
     }
-    
+
     function processCheckinData(intervalMinutes) {
         if (rawCheckinData.length === 0) return { labels: [], data: [] };
         const counts = new Map();
-        
+
         rawCheckinData.forEach(date => {
             const roundedDate = new Date(date);
             roundedDate.setSeconds(0, 0);
@@ -703,17 +1015,17 @@
         if (counts.size === 0) return { labels: [], data: [] };
 
         const sortedKeys = Array.from(counts.keys()).sort((a, b) => a - b);
-        
+
         const minTime = sortedKeys[0];
         const maxTime = sortedKeys[sortedKeys.length - 1];
         const intervalMillis = intervalMinutes * 60 * 1000;
-        
+
         for (let time = minTime; time <= maxTime; time += intervalMillis) {
             if (!counts.has(time)) {
                 counts.set(time, 0);
             }
         }
-        
+
         const finalSortedKeys = Array.from(counts.keys()).sort((a, b) => a - b);
         const labels = finalSortedKeys.map(key => new Date(key));
         const data = finalSortedKeys.map(key => counts.get(key));
@@ -724,10 +1036,10 @@
     function updateCheckinChart() {
         const interval = 60;
         const { labels, data } = processCheckinData(interval);
-        
+
         const ctx = document.getElementById('checkinHourlyChart').getContext('2d');
         if (!ctx) return;
-        
+
         document.getElementById('checkinChartInfo').textContent = `Agrupado por ${interval} minuto(s) - Use o zoom e arraste para explorar`;
 
         const isDark = document.documentElement.classList.contains('dark');
@@ -783,11 +1095,11 @@
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            title: function(context) {
+                            title: function (context) {
                                 const date = new Date(context[0].label);
                                 return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                             },
-                            label: function(context) { return `Check-ins: ${context.parsed.y}`; }
+                            label: function (context) { return `Check-ins: ${context.parsed.y}`; }
                         }
                     },
                     zoom: {
@@ -803,10 +1115,10 @@
         }
         checkinChartInstance = new Chart(ctx, config);
     }
-    
+
     // --- LÓGICA DAS OUTRAS ABAS ---
     async function fetchData() { await fetchGuests(); await fetchStats(); }
-    
+
     async function fetchGuests() {
         const { currentPage, sortBy, sortDir, searchTerm } = appState;
         const url = new URL(`${API_URL}/guests`, window.location.origin);
@@ -842,12 +1154,12 @@
         const endItem = Math.min(page * per_page, total_items);
         controlsContainer.innerHTML = `<div class="hidden sm:block"><p class="text-sm text-gray-700 dark:text-gray-400">Mostrando de <span class="font-medium">${startItem}</span> a <span class="font-medium">${endItem}</span> de <span class="font-medium">${total_items}</span> resultados</p></div><div class="flex-1 flex justify-between sm:justify-end"><button onclick="changePage(${page - 1})" ${!has_prev ? 'disabled' : ''} class="pagination-btn relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">Anterior</button><button onclick="changePage(${page + 1})" ${!has_next ? 'disabled' : ''} class="pagination-btn ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">Próximo</button></div>`;
     }
-    
+
     function renderGuests(guests, totalItems) {
         const tableBody = document.getElementById('guestList'); const cardsContainer = document.getElementById('guestCardsList'); tableBody.innerHTML = ''; cardsContainer.innerHTML = '';
         document.getElementById('guestCount').textContent = totalItems;
         if (guests.length === 0) { const message = `<div class="text-center py-8 text-gray-500">${appState.searchTerm ? 'Nenhum convidado encontrado para "' + appState.searchTerm + '".' : 'Nenhum convidado adicionado.'}</div>`; tableBody.innerHTML = `<tr><td colspan="6">${message}</td></tr>`; cardsContainer.innerHTML = message; return; }
-        
+
         guests.forEach(guest => {
             const guestNameJs = guest.name.replace(/'/g, "\\'");
             const statusBadge = guest.entered ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"><i class="fas fa-check mr-1"></i>Entrou</span>' : '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200"><i class="fas fa-times mr-1"></i>Não Entrou</span>';
@@ -889,13 +1201,13 @@
             document.getElementById('guestName').value = ''; fetchData();
         } catch (error) { guestAddedInfo.textContent = `Erro: ${error.message}`; guestAddedInfo.className = 'font-semibold mb-4 text-red-600 dark:text-red-400'; showToast(error.message, 'error'); }
     }
-    
+
     async function editGuest(qrHash, newName) { try { const response = await fetch(`${API_URL}/guests/${qrHash}/edit`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName }) }); const result = await response.json(); if (!response.ok) throw new Error(result.error); showToast(result.message, 'success'); fetchGuests(); } catch (error) { showToast(error.message, 'error'); } }
     function confirmDeleteGuest(qrHash, guestName) { showConfirmationModal({ title: 'Confirmar Remoção', message: `Tem certeza que deseja remover "${guestName}"?`, confirmText: 'Deletar', onConfirm: () => { deleteGuest(qrHash); } }); }
     async function deleteGuest(qrHash) { try { const response = await fetch(`${API_URL}/guests/${qrHash}`, { method: 'DELETE' }); const result = await response.json(); if (!response.ok) throw new Error(result.error); showToast(result.message, 'success'); fetchData(); } catch (error) { showToast(error.message, 'error'); } }
-    async function toggleGuestEntry(qrHash) { try { const response = await fetch(`${API_URL}/guests/${qrHash}/toggle_entry`, { method: 'PUT' }); const result = await response.json(); if (!response.ok) throw new Error(result.error); showToast(result.message, 'success'); fetchData(); } catch (error) { showToast(error.message, 'error');} }
+    async function toggleGuestEntry(qrHash) { try { const response = await fetch(`${API_URL}/guests/${qrHash}/toggle_entry`, { method: 'PUT' }); const result = await response.json(); if (!response.ok) throw new Error(result.error); showToast(result.message, 'success'); fetchData(); } catch (error) { showToast(error.message, 'error'); } }
     function exportGuests(format) { const exportUrl = `${API_URL}/export/${format}`; window.location.href = exportUrl; }
-    
+
     async function inviteGuestForPayment() {
         const guestNameForPayment = document.getElementById('guestNameForPayment').value.trim();
         if (!guestNameForPayment) { showToast('Nome do convidado para pagamento é obrigatório.', 'error'); return; }
@@ -924,7 +1236,7 @@
 
     async function fetchStats() {
         try {
-            const response = await fetch(`/api/party/${partyId}/stats`);
+            const response = await fetch(`${API_URL}/stats`);
             if (!response.ok) throw new Error('Falha ao buscar estatísticas.');
             const stats = await response.json();
             document.getElementById('statsTotalInvited').textContent = stats.total_invited;

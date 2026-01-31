@@ -48,9 +48,12 @@ echo "Limpando tabelas do banco de dados (Método Robusto)..."
 # Bloco de código Python que será executado para limpar o BD.
 # Usar 'python -c' é mais confiável que tentar usar um shell interativo.
 PYTHON_CLEAN_SCRIPT="
-from app import app, db
+from app import create_app
+from app.extensions import db
 from sqlalchemy import text
 import sys
+
+app = create_app()
 
 print('--- Entrando no contexto da aplicação Flask para limpar o BD ---')
 with app.app_context():
@@ -90,6 +93,6 @@ echo -e "\n${GREEN}==================================================${NC}"
 echo -e "${GREEN}         PROCESSO CONCLUÍDO COM SUCESSO!        ${NC}"
 echo -e "${GREEN}==================================================${NC}"
 echo "Seu banco de dados foi resetado e as tabelas foram criadas."
-echo "Você já pode iniciar sua aplicação com 'python app.py'."
+echo "Você já pode iniciar sua aplicação com 'python run.py'."
 
 exit 0

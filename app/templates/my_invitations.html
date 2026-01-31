@@ -49,7 +49,7 @@
                 <div class="invitation-card glass-card rounded-2xl shadow-lg overflow-hidden flex flex-col justify-between">
                     {% if invitation.party.logo_filename %}
                         <div class="w-full h-40 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                            <img src="{{ url_for('serve_persistent_file', filename='party_logos/' + invitation.party.logo_filename) }}" alt="Logo da Festa {{ invitation.party.name }}" class="w-full h-full object-cover">
+                            <img src="{{ url_for('main.serve_persistent_file', filename='party_logos/' + invitation.party.logo_filename) }}" alt="Logo da Festa {{ invitation.party.name }}" class="w-full h-full object-cover">
                         </div>
                     {% endif %}
                     <div class="p-6 flex-grow">
@@ -85,7 +85,7 @@
                                 <i class="fas fa-eye mr-2"></i>Mostrar Ingresso
                             </button>
                         {% elif invitation.payment_charge_id %}
-                             <a href="{{ url_for('show_ticket_payment', payment_charge_id=invitation.payment_charge_id) }}" 
+                             <a href="{{ url_for('payment.show_ticket_payment', payment_charge_id=invitation.payment_charge_id) }}" 
                                class="w-full text-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-lg font-bold text-white bg-gradient-to-r from-yellow-500 to-orange-500 hover:shadow-lg transition-all duration-200 hover-scale">
                                 <i class="fas fa-money-check-alt mr-2"></i>Ver Pagamento
                             </a>

@@ -102,7 +102,7 @@
       <header class="glass-header sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <a href="{{ url_for('landing') }}" class="flex items-center space-x-3">
+                <a href="{{ url_for('main.landing') }}" class="flex items-center space-x-3">
                     <img src="{{ url_for('static', filename='logo.png') }}" alt="QRPass Logo" class="logo-image">
                     <div>
                         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">QRPass</h1>
@@ -110,9 +110,9 @@
                 </a>
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('dashboard') }}" class="hidden sm:inline-block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light font-semibold transition-colors">Minhas Festas</a>
-                        <a href="{{ url_for('my_invitations') }}" class="hidden sm:inline-block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light font-semibold transition-colors">Meus Ingressos</a>
-                        <a href="{{ url_for('logout') }}" class="hidden sm:inline-block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light font-semibold transition-colors">Sair</a>
+                        <a href="{{ url_for('main.dashboard') }}" class="hidden sm:inline-block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light font-semibold transition-colors">Minhas Festas</a>
+                        <a href="{{ url_for('main.my_invitations') }}" class="hidden sm:inline-block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light font-semibold transition-colors">Meus Ingressos</a>
+                        <a href="{{ url_for('auth.logout') }}" class="hidden sm:inline-block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light font-semibold transition-colors">Sair</a>
                     {% endif %}
                     {% block header_actions %}
                         {% endblock %}
@@ -146,9 +146,9 @@
 
     <footer class="text-center py-8 px-4">
         <div class="text-sm text-gray-500 dark:text-gray-400">
-            <a href="{{ url_for('landing') }}" class="hover:text-primary">Início</a>
+            <a href="{{ url_for('main.landing') }}" class="hover:text-primary">Início</a>
             <span class="mx-2">·</span>
-            <a href="{{ url_for('about') }}" class="hover:text-primary">Sobre</a>
+            <a href="{{ url_for('main.about') }}" class="hover:text-primary">Sobre</a>
             <span class="mx-2">·</span>
             <span>© {{ current_year }} QRPass. Todos os direitos reservados.</span>
         </div>

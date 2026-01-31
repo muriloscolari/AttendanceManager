@@ -9,9 +9,9 @@
     <meta property="og:title" content="{{ party.name }}">
     <meta property="og:description" content="{{ party.public_description or 'Detalhes do evento em QRPass.' }}">
     {% if party.logo_filename %}
-    <meta property="og:image" content="{{ url_for('serve_persistent_file', filename='party_logos/' + party.logo_filename, _external=True) }}">
+    <meta property="og:image" content="{{ url_for('main.serve_persistent_file', filename='party_logos/' + party.logo_filename, _external=True) }}">
     {% endif %}
-    <meta property="og:url" content="{{ url_for('public_party_page', shareable_link_id=party.shareable_link_id, _external=True) }}">
+    <meta property="og:url" content="{{ url_for('public.public_party_page', shareable_link_id=party.shareable_link_id, _external=True) }}">
     <meta property="og:type" content="website">
 
     <!-- Scripts e Estilos -->
@@ -101,7 +101,7 @@
             
             {% if party.logo_filename %}
             <div id="image-container" class="w-full h-48 bg-gray-200 dark:bg-gray-800">
-                 <img id="party-logo-image" src="{{ url_for('serve_persistent_file', filename='party_logos/' + party.logo_filename) }}" 
+                 <img id="party-logo-image" src="{{ url_for('main.serve_persistent_file', filename='party_logos/' + party.logo_filename) }}" 
                      alt="Logo do Evento" 
                      class="w-full h-full object-cover"
                      crossorigin="anonymous">
@@ -166,7 +166,7 @@
                 <!-- CORREÇÃO FINAL: Adicionado 'text-base' para aumentar o tamanho da fonte e melhorar o alinhamento vertical -->
                 {% if party.ticket_price > 0 and party.allow_public_purchase %}
                 <div class="mt-8 text-center">
-                    <a href="{{ url_for('buy_ticket_public', party_id=party.id) }}" 
+                    <a href="{{ url_for('payment.buy_ticket_public', party_id=party.id) }}" 
                        class="btn-action bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center space-x-2 text-base">
                         <i class="fas fa-ticket-alt"></i>
                         <span>Comprar Ingresso (R$ {{ '%.2f' | format(party.ticket_price) }})</span>
@@ -174,7 +174,7 @@
                 </div>
                 {% elif party.ticket_price == 0 and party.allow_public_purchase %}
                 <div class="mt-8 text-center">
-                    <a href="{{ url_for('buy_ticket_public', party_id=party.id) }}" 
+                    <a href="{{ url_for('payment.buy_ticket_public', party_id=party.id) }}" 
                        class="btn-action bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center space-x-2 text-base">
                         <i class="fas fa-ticket-alt"></i>
                         <span>Obter Ingresso Gratuito</span>
@@ -199,7 +199,7 @@
         </div>
         
         <footer class="text-center mt-6">
-            <a id="footer-link" href="{{ url_for('landing') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            <a id="footer-link" href="{{ url_for('main.landing') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                 Criado com <strong>QRPass</strong>
             </a>
         </footer>

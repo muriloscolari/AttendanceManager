@@ -3,7 +3,7 @@
 {% block title %}Upgrade para VIP - QRPass{% endblock %}
 
 {% block header_actions %}
-    <a href="{{ url_for('dashboard') }}" class="glass-effect text-primary dark:text-white px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
+    <a href="{{ url_for('main.dashboard') }}" class="glass-effect text-primary dark:text-white px-4 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale flex items-center space-x-2">
         <i class="fas fa-arrow-left"></i>
         <span>Dashboard</span>
     </a>
@@ -51,7 +51,7 @@
 
     <!-- MUDANÇA: Botão agora é um link para a página de completar perfil -->
     <div class="mt-8">
-        <a href="{{ url_for('complete_profile') }}"
+        <a href="{{ url_for('main.complete_profile') }}"
            class="w-full inline-block bg-gradient-to-r from-success to-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition-all duration-200 hover-scale transform hover:-translate-y-1">
             <i class="fab fa-pix"></i>
             <span>Pagar com PIX e Virar VIP</span>

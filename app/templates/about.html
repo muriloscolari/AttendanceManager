@@ -2,8 +2,8 @@
 {% block title %}Sobre o QRPass - Como Funciona{% endblock %}
 
 {% block header_actions %}
-<a href="{{ url_for('login') }}" class="glass-effect text-primary dark:text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale text-sm sm:text-base">Entrar</a>
-<a href="{{ url_for('signup') }}" class="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale text-sm sm:text-base">Criar Conta</a>
+<a href="{{ url_for('auth.login') }}" class="glass-effect text-primary dark:text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale text-sm sm:text-base">Entrar</a>
+<a href="{{ url_for('auth.signup') }}" class="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover-scale text-sm sm:text-base">Criar Conta</a>
 {% endblock %}
 
 {% block content %}
