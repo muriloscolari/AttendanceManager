@@ -4,7 +4,7 @@ load_dotenv()
 
 from flask import Flask
 from app.config import Config
-from app.extensions import db, login_manager
+from app.extensions import db, login_manager, migrate
 from app.utils import generate_google_maps_url
 
 def create_app(config_class=Config):
@@ -13,6 +13,7 @@ def create_app(config_class=Config):
 
     # Initialize Extensions
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.login_message = "Por favor, faça login para acessar esta página."

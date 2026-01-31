@@ -1,8 +1,8 @@
 """Reset e criação inicial das tabelas
 
-Revision ID: de7b1978faca
+Revision ID: 091bc7ece679
 Revises: 
-Create Date: 2025-07-07 03:10:24.781322
+Create Date: 2026-01-31 01:12:37.522590
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'de7b1978faca'
+revision = '091bc7ece679'
 down_revision = None
 branch_labels = None
 depends_on = None

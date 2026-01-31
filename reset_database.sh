@@ -75,16 +75,16 @@ check_success "Limpeza do Banco de Dados"
 # --- PASSO 2: CRIAR MIGRAÇÕES ---
 echo -e "\n${GREEN}--> PASSO 2: Criando um novo histórico de migrações...${NC}"
 
-echo "Executando: python manage.py db init"
-python manage.py db init
+echo "Executando: flask db init"
+flask db init
 check_success "'db init'"
 
-echo "Executando: python manage.py db migrate"
-python manage.py db migrate -m "Reset e criação inicial das tabelas"
+echo "Executando: flask db migrate"
+flask db migrate -m "Reset e criação inicial das tabelas"
 check_success "'db migrate'"
 
-echo "Executando: python manage.py db upgrade"
-python manage.py db upgrade
+echo "Executando: flask db upgrade"
+flask db upgrade
 check_success "'db upgrade'"
 
 
