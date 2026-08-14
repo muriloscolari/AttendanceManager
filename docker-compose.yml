@@ -1,0 +1,39 @@
+services:
+  web:
+    image: revocable/qrpass:latest
+    ports:
+      - "5757:5000"
+    environment:
+      - FLASK_APP=run.py
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-attendance_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  watchtower:
+    image: containrrr/watchtower
+    environment:
+      - DOCKER_API_VERSION=1.40
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+
+volumes:
+  postgres_data:
